@@ -1,12 +1,8 @@
 package com.WCCSecurity.securitycourse.entity;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -19,12 +15,23 @@ public class User{
     private String email;
     private String password;
 
-    /*@ManyToMany
-    @JoinTable(name = "user_role",
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();*/
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
 
+    private List<Role> roles = new ArrayList<>();
+
+    // Getter et Setter pour la liste des rôles
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     public User(){}
 
