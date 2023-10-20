@@ -35,14 +35,14 @@ public class UserController {
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String role) {
         Optional<User> userOptional = this.userRepository.findByUsername(username);
         Optional<Role> roleOptional = this.roleRepository.findByRole(role);
-
+        //on vérifie la présence du user et de son rôle
         if (userOptional.isPresent() && roleOptional.isPresent()) {
             String realUser = userOptional.get().getUsername();
             String realRole = roleOptional.get().getRole();
             String token = this.jwtService.generateToken(realUser, realRole);
             return ResponseEntity.ok(token);
         } else {
-            // Log error to check the user and role values
+            // sinon on renvoi une erreur
             System.err.println("User or Role not found: " + username + " or " + role);
             throw new RuntimeException("User or Role not found");
         }

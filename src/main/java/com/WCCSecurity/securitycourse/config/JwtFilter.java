@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter { //le filter est exécuté a chaque requête
 
     @Autowired
     JwtService jwtService;
@@ -24,12 +24,13 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
+        //extrait la valeur de l'en-tête "Authorization" de la requête HTTP, qui doit contenir le jeton JWT.
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null) {
+            //on spécifie 7 car bearer = 6 lettres + espace, on vérifie donc après bearer
             String token = authorizationHeader.substring(7);
 
-            if (token != null && this.jwtService.isValid(token)) {
+            if (token != null && this.jwtService.isValid(token, this.jwtService.getSubject(token))) {
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(this.jwtService.getRole(token)));

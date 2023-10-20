@@ -15,6 +15,7 @@ public class User{
     private String email;
     private String password;
 
+    //FetchType.EAGER force à charger les rôles en même temps que les users
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

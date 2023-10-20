@@ -21,14 +21,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/register", "login").permitAll()
+                        .requestMatchers("/register", "login").permitAll() // accessible sans authentification
                         .requestMatchers(HttpMethod.GET,"/admin").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/admin-user").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
+                //permet d'ajouter la protection CSRF contre les attaques qui exploitent l'exécution non autorisée de commandes
                 .csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .ignoringRequestMatchers("/register", "/login")
                 )
+                //on ajoute notre jwtfilter pour filtrer nos requêtes
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
